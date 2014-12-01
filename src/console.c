@@ -26,7 +26,7 @@ static int cursorY = 0;
 static ConsoleColor color = { COLOR_LIGHTGRAY, COLOR_BLACK };
 static ConsoleState state = csDefault;
 
-static volatile ConsoleChar *screen = (ConsoleChar*)0xB8000;
+static ConsoleChar *screen = (ConsoleChar*)0xB8000;
 
 void ksetpos(int x, int y)
 {
@@ -83,6 +83,24 @@ static void newline()
 {
 	cursorX = 0;
 	cursorY += 1;
+	if(cursorY == (CONSOLE_HEIGHT))
+	{
+		// We need to scroll here:
+		
+		// Copy everything line on the screen to the previous line
+		for(int line = 1; line < CONSOLE_HEIGHT; line++)
+		{
+			memcpy(&screen[CONSOLE_WIDTH * (line-1)], &screen[CONSOLE_WIDTH * line], CONSOLE_WIDTH * sizeof(ConsoleChar));
+		}
+		// Fill the last line with blanks
+		for(int i = 0; i < CONSOLE_WIDTH; i++)
+		{
+			screen[CONSOLE_WIDTH * (CONSOLE_HEIGHT-1)+i].c = ' ';
+			screen[CONSOLE_WIDTH * (CONSOLE_HEIGHT-1)+i].color = *((uint8_t*)&color);
+		}
+		// Reset y cursor position to previous line (we don't want to write out of bounds)
+		cursorY -= 1;
+	}
 }
 
 void kputc(char c)

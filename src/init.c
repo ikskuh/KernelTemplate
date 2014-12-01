@@ -6,7 +6,6 @@ void init(void)
 	ksetcolor(COLOR_BLACK, COLOR_LIGHTGRAY);
 	kclear();
 	kputs("Hello World!\nSecond Line!\n");
-	
 	kputs("Hey \x12\x04User\x12\x07!\n");
 	
 	char buffer[64];
@@ -18,5 +17,15 @@ void init(void)
 	
 	kputs("printf test:\n");
 	kprintf("This %s %c test line.\n", "is", 'a');
-	kprintf("Numbers: %d %i %x %b\n", 15, 15, 15, 15);
+	kprintf("Numbers: %d %i %x %b\n", 15, 15, 15, 15);	
+	
+	kputs("scroll-test:\n");
+	for(int i = 0; i < 100; i++)
+	{
+		kprintf("They see me scrolling, they hating! %i\n", i);
+	}
+	for(int i = 0; i < 272; i++)
+	{
+		kprintf("x");
+	}
 }
