@@ -1,12 +1,14 @@
 #include "stdlib.h"
 #include "console.h"
+#include "interrupts.h"
+
 
 void init(void)
 {
 	ksetcolor(COLOR_BLACK, COLOR_LIGHTGRAY);
 	kclear();
 	kputs("Hello World!\nSecond Line!\n");
-	kputs("Hey \x12\x04User\x12\x07!\n");
+	kputs("Hey \x12\x05User\x12\x07!\n");
 	
 	char buffer[64];
 	kputs("itoa test:\n");
@@ -17,8 +19,12 @@ void init(void)
 	
 	kputs("printf test:\n");
 	kprintf("This %s %c test line.\n", "is", 'a');
-	kprintf("Numbers: %d %i %x %b\n", 15, 15, 15, 15);	
+	kprintf("Numbers: %d %i %x %b\n", 15, 15, 15, 15);
 	
+	kputs("Initialize interrupts: ");
+	intr_init();
+	kputs("success.\n");
+	/*
 	kputs("scroll-test:\n");
 	for(int i = 0; i < 100; i++)
 	{
@@ -28,4 +34,9 @@ void init(void)
 	{
 		kprintf("x");
 	}
+	*/
+	
+	kputs("Trigger INT0: ");
+	__asm__ volatile("int $0x00");
+	kputs("success.\n");
 }
