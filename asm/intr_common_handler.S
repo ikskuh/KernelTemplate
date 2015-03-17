@@ -37,7 +37,20 @@ intr_stub 18
 // IRQs
 intr_stub 32
 intr_stub 33
-// TODO: Fill until 47
+intr_stub 34
+intr_stub 35
+intr_stub 36
+intr_stub 37
+intr_stub 38
+intr_stub 39
+intr_stub 40
+intr_stub 41
+intr_stub 42
+intr_stub 43
+intr_stub 44
+intr_stub 45
+intr_stub 46
+intr_stub 47
 
 // System call
 intr_stub 48
