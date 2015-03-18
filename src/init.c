@@ -38,9 +38,9 @@ void init(void)
 	intr_init();
 	kputs("success.\n");
 
-	kputs("Trigger INT0: ");
-	__asm__ volatile("int $0x07");
-	kputs("success.\n");
+	// kputs("Trigger INT0: ");
+	//__asm__ volatile("int $0x20");
+	// kputs("success.\n");
 
 	kputs("Enable hw interrupts:  ");
 	irq_enable();

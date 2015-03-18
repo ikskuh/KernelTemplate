@@ -41,4 +41,6 @@ STUB(47);
 
 STUB(48);
 
+STUB(80);
+
 #undef STUB

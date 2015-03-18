@@ -55,6 +55,8 @@ intr_stub 47
 // System call
 intr_stub 48
 
+intr_stub 80
+
 .extern intr_routine
 intr_common_handler:
     // Save additional cpu state
