@@ -38,13 +38,15 @@ void init(void)
 	intr_init();
 	kputs("success.\n");
 
-	// kputs("Trigger INT0: ");
-	//__asm__ volatile("int $0x20");
-	// kputs("success.\n");
-
 	kputs("Enable hw interrupts:  ");
 	irq_enable();
 	kputs("success.\n");
 
-	while(0);
+	//__asm__ volatile("sti");
+
+	while(1)
+	{
+		kputs("x");
+		for(volatile size_t i = 0; i < 10000000; i++);
+	}
 }

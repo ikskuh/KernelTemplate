@@ -43,6 +43,22 @@ static const char *interruptNames[] = {
 	"Reserved 29",//	21-29 (0x15-0x1D)	-	-	No
 	"Security Exception",//	30 (0x1E)	-	#SX	Yes
 	"Reserved 31",//	31 (0x1F)	-	-	No
+	"IRQ 0",
+	"IRQ 1",
+	"IRQ 2",
+	"IRQ 3",
+	"IRQ 4",
+	"IRQ 5",
+	"IRQ 6",
+	"IRQ 7",
+	"IRQ 8",
+	"IRQ 9",
+	"IRQ 10",
+	"IRQ 11",
+	"IRQ 12",
+	"IRQ 13",
+	"IRQ 14",
+	"IRQ 15",
 };
 
 static const size_t interruptNameCount = sizeof(interruptNames) / sizeof(interruptNames[0]);
@@ -55,8 +71,31 @@ void intr_routine(CpuState *state)
 	if(state->intr < interruptNameCount)
 		name = interruptNames[state->intr];
 	kprintf("\n\x12\x04Interrupt [%d] %s occurred!\x12\0x7\n", state->intr, name);
-	if(state->intr < 0x20) {
-		while(1);
+	if(state->intr < 0x20)
+	{
+		while(1)
+		{
+			__asm__ volatile("cli; hlt");
+		}
+	}
+	if (state->intr >= 0x20 && state->intr <= 0x2f)
+	{
+		if (state->intr >= 0x28)
+		{
+			// EOI an Slave-PIC
+			outb(0xa0, 0x20);
+		}
+		// EOI an Master-PIC
+		outb(0x20, 0x20);
+	}
+	else
+	{
+		kprintf("Unbekannter Interrupt\n");
+		while(1)
+		{
+			// Prozessor anhalten
+			__asm__ volatile("cli; hlt");
+		}
 	}
 }
 
@@ -206,9 +245,9 @@ void intr_init(void)
 	// Initialize global descriptor table
 	init_gdt();
 
-	// Initialize Programmable Interrupt Controller
-	init_pic();
-
 	// Initialize interrupt descriptor table
 	init_idt();
+
+	// Initialize Programmable Interrupt Controller
+	init_pic();
 }
