@@ -70,9 +70,9 @@ void intr_routine(CpuState *state)
 	const char *name = "Unknown";
 	if(state->intr < interruptNameCount)
 		name = interruptNames[state->intr];
-	kprintf("\n\x12\x04Interrupt [%d] %s occurred!\x12\0x7\n", state->intr, name);
 	if(state->intr < 0x20)
 	{
+		kprintf("\n\x12\x04Exception [%d] %s!\x12\0x7\n", state->intr, name);
 		while(1)
 		{
 			__asm__ volatile("cli; hlt");
@@ -90,7 +90,7 @@ void intr_routine(CpuState *state)
 	}
 	else
 	{
-		kprintf("Unbekannter Interrupt\n");
+		kprintf("\n\x12\x04Interrupt [%d] %s occurred!\x12\0x7\n", state->intr, name);
 		while(1)
 		{
 			// Prozessor anhalten
