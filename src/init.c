@@ -1,6 +1,7 @@
 #include "stdlib.h"
 #include "console.h"
 #include "interrupts.h"
+#include "pmm.h"
 
 static void debug_test()
 {
@@ -28,11 +29,69 @@ static void debug_test()
 	*/
 }
 
-void init(void)
+static void dumpMB(const MultibootStructure *mbHeader)
 {
+    kputs("Multiboot Information:\n");
+    if(mbHeader->flags & MB_MEMSIZE)
+    {
+        kprintf("Lower Memory: %d kB\n", mbHeader->memLower);
+        kprintf("Upper Memory: %d kB\n", mbHeader->memUpper);
+    }
+    // TODO: MB_BOOTDEVICE
+    if(mbHeader->flags & MB_COMMANDLINE)
+    {
+        kprintf("Commandline: %s\n", mbHeader->commandline);
+    }
+    if(mbHeader->flags & MB_MODULES)
+    {
+        const MultibootModule *mod = (const MultibootModule *)mbHeader->modules;
+        for(size_t i = 0; i < mbHeader->moduleCount; i++)
+        {
+            kprintf("Module %s [%d - %d]\n", mod[i].name, mod[i].start, mod[i].end);
+        }
+    }
+    if(mbHeader->flags & MB_SYMS_AOUT)
+    {
+        kputs("Kernel File Format: a.out\n");
+    }
+    if(mbHeader->flags & MB_SYMS_ELF)
+    {
+        kputs("Kernel File Format: ELF\n");
+    }
+    if(mbHeader->flags & MB_MEMORYMAP)
+    {
+        uintptr_t it = mbHeader->memoryMap;
+        kprintf("Memory Map: %d entries\n", mbHeader->memoryMapLength);
+        for(size_t i = 0; i < mbHeader->memoryMapLength; i++)
+        {
+            const MultibootMemoryMap *mmap = (const MultibootMemoryMap *)it;
+            if(mmap->type == 1)
+                kprintf("Memory Map: [%d + %d] %s\n", (uint32_t)mmap->base, (uint32_t)mmap->length, mmap->type == 1 ? "free" : "preserved");
+            it += mmap->entry_size + 4; // Stupid offset :P
+        }
+    }
+    // TODO: MB_DRIVES
+    // TODO: MB_CONFIG_TABLE
+    if(mbHeader->flags & MB_BOOTLOADER_NAME)
+    {
+        kprintf("Bootloader Name: %s\n", mbHeader->bootLoaderName);
+    }
+    // TODO: MB_APS_TABLE
+}
+
+void init(const MultibootStructure *mbHeader)
+{
+    (void)debug_test;
+
 	ksetcolor(COLOR_BLACK, COLOR_LIGHTGRAY);
 	kclear();
 	kputs("Welcome to \x12\x05nucleo\x12\x07!\n");
+
+    dumpMB(mbHeader);
+
+    kputs("Initialize physical memory management: ");
+    pmm_init(mbHeader);
+    kputs("success.\n");
 
 	kputs("Initialize interrupts: ");
 	intr_init();

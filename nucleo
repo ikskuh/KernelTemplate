@@ -23,17 +23,7 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=4
-FILE_NAME_0=0;Make;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2FMakefile;0;4
-FILE_NAME_1=155;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Fconsole.c;0;4
-FILE_NAME_2=0;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Fconsole.h;0;4
-FILE_NAME_3=397;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Fcpustate.h;0;4
-FILE_NAME_4=935;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Finit.c;0;4
-FILE_NAME_5=3509;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Finterrupts.c;0;4
-FILE_NAME_6=594;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Finterrupts.h;0;4
-FILE_NAME_7=0;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Fstdlib.c;0;4
-FILE_NAME_8=477;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Fstdlib.h;0;4
-FILE_NAME_9=277;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2Fprojects%2Fnucleo%2Fsrc%2Fio.h;0;4
+current_page=0
 
 [VTE]
 last_dir=/home/felix/projects/nucleo

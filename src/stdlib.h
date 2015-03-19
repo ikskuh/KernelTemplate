@@ -1,6 +1,7 @@
 #pragma once
 
-#include "inttypes.h"
+#include <stddef.h>
+#include <inttypes.h>
 #include "varargs.h"
 
 char *itoa(int value, char *str, int base);

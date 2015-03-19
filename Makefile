@@ -7,7 +7,7 @@ LD = ld
 # define nullptr, but not NULL.
 CFLAGS = -m32 -Dnullptr=0
 ASFLAGS =
-CCFLAGS = --std=c11 -Wall -g -fno-stack-protector -nostdinc
+CCFLAGS = --std=c11 -Wall -g -fno-stack-protector -ffreestanding
 LDFLAGS = -melf_i386 -Tkernel.ld
 
 kernel: $(OBJS)
