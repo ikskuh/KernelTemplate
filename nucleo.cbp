@@ -3,13 +3,23 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="nucleo" />
+		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="clang" />
+		<MakeCommands>
+			<Build command="$make -f $makefile $target" />
+			<CompileFile command="$make -f $makefile $file" />
+			<Clean command="$make -f $makefile clean" />
+			<DistClean command="$make -f $makefile distclean$target" />
+			<AskRebuildNeeded command="$make -q -f $makefile $target" />
+			<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
+		</MakeCommands>
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/nucleo" prefix_auto="1" extension_auto="1" />
+			<Target title="kernel">
+				<Option output="kernel" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
-				<Option type="1" />
+				<Option type="5" />
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-g" />
@@ -19,6 +29,38 @@
 		<Compiler>
 			<Add option="-Weverything" />
 		</Compiler>
+		<Unit filename="Makefile" />
+		<Unit filename="asm/intr_common_handler.S" />
+		<Unit filename="asm/multiboot.S" />
+		<Unit filename="asm/start.S" />
+		<Unit filename="kernel.ld" />
+		<Unit filename="src/console.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/console.h" />
+		<Unit filename="src/cpustate.h" />
+		<Unit filename="src/init.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/interrupts.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/interrupts.h" />
+		<Unit filename="src/intr_stubs.h" />
+		<Unit filename="src/io.h" />
+		<Unit filename="src/multiboot.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="src/pmm.c">
+			<Option compilerVar="CC" />
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="src/pmm.h" />
+		<Unit filename="src/stdlib.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/stdlib.h" />
+		<Unit filename="src/varargs.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
