@@ -1,7 +1,19 @@
+#include "kernel.h"
 #include "stdlib.h"
 #include "console.h"
 #include "interrupts.h"
 #include "pmm.h"
+
+void die(const char *msg)
+{
+    kputs("\n");
+    ksetcolor(COLOR_RED, COLOR_WHITE);
+    kputs(msg);
+    while(1)
+    {
+        __asm__ volatile ("cli; hlt;");
+    }
+}
 
 static void debug_test()
 {
@@ -92,6 +104,8 @@ void init(const MultibootStructure *mbHeader)
     kputs("Initialize physical memory management: ");
     pmm_init(mbHeader);
     kputs("success.\n");
+    uint32_t freeMem = pmm_calc_free();
+    kprintf("Free memory: %d B, %d kB, %d MB\n", freeMem, freeMem >> 10, freeMem >> 20);
 
 	kputs("Initialize interrupts: ");
 	intr_init();
