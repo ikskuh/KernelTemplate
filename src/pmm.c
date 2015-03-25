@@ -18,8 +18,15 @@ static inline void resolve(void *pptr, uint32_t *idx, uint32_t *bit)
     uintptr_t ptr = (uintptr_t)pptr;
     ptr >>= 12; // Calculate page ID
 
-    *idx = ptr / 12; // B32 offset in bitmap.
+    *idx = ptr / 32; // B32 offset in bitmap.
     *bit = ptr % 32; // Bit offset in bitmap
+}
+
+static inline void *rebuild(uint32_t idx, uint32_t bit)
+{
+    uintptr_t ptr = 32 * idx + bit;
+    ptr <<= 12;
+    return (void*)ptr;
 }
 
 void pmm_init(const MultibootStructure *mb)
@@ -66,4 +73,23 @@ void pmm_free(void *pptr)
     uint32_t bit, idx;
     resolve(pptr, &idx, &bit);
     bitmap[idx] |= (1<<bit);
+}
+
+
+void *pmm_alloc(void)
+{
+    for(uint32_t idx = 0; idx < BITMAP_SIZE; idx++)
+    {
+        for(uint32_t bit = 0; bit < 32; bit++)
+        {
+            if(bitmap[idx] & (1<<bit))
+            {
+                // Allocate here
+                bitmap[idx] &= ~(1<<bit);
+                return rebuild(idx, bit);
+            }
+        }
+    }
+    die("out of physical memory");
+    return (void*)0xDEADBEEF;
 }
