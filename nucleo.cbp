@@ -48,6 +48,7 @@
 		<Unit filename="src/interrupts.h" />
 		<Unit filename="src/intr_stubs.h" />
 		<Unit filename="src/io.h" />
+		<Unit filename="src/kernel.h" />
 		<Unit filename="src/multiboot.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>

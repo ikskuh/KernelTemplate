@@ -7,6 +7,9 @@
 
 #define BITMAP_SIZE 32768
 
+extern const void kernelStart;
+extern const void kernelEnd;
+
 /**
  * Stores for every page in 4 GB RAM if it is free or not.
  * A set bit indicates that the page is free.
@@ -36,21 +39,37 @@ void pmm_init(const MultibootStructure *mb)
 
     memset(bitmap, 0, sizeof(bitmap));
 
-    uintptr_t it = mb->memoryMap;
-    for(size_t i = 0; i < mb->memoryMapLength; i++)
+    // Free the memory map
     {
-        const MultibootMemoryMap *mmap = (const MultibootMemoryMap *)it;
-        if(mmap->type == 1)
+        uintptr_t it = mb->memoryMap;
+        for(size_t i = 0; i < mb->memoryMapLength; i++)
         {
-            uintptr_t addr = (uintptr_t)mmap->base;
-            uintptr_t end_addr = (uintptr_t)addr + (uintptr_t)mmap->length;
-            while (addr < end_addr)
+            const MultibootMemoryMap *mmap = (const MultibootMemoryMap *)it;
+            if(mmap->type == 1)
             {
-                pmm_free((void*)addr);
-                addr += 0x1000;
+                uintptr_t addr = (uintptr_t)mmap->base;
+                uintptr_t end_addr = (uintptr_t)addr + (uintptr_t)mmap->length;
+                while (addr < end_addr)
+                {
+                    pmm_free((void*)addr);
+                    addr += 0x1000;
+                }
             }
+            it += mmap->entry_size + 4; // Stupid offset :P
         }
-        it += mmap->entry_size + 4; // Stupid offset :P
+    }
+
+    // Mark the whole kernel as "used"
+    {
+        uintptr_t it = (uintptr_t)&kernelStart;
+        uintptr_t end = (uintptr_t)&kernelEnd;
+        while(it < end)
+        {
+            uint32_t bit, idx;
+            resolve((void*)it, &idx, &bit);
+            bitmap[idx] &= ~(1<<bit);
+            it += 0x1000;
+        }
     }
 }
 

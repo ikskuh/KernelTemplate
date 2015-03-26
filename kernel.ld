@@ -8,14 +8,16 @@ ENTRY(_start)
 SECTIONS
 {
     /*
-     * . ist die aktuelle Position in der Datei. Wir wollen den Kernel wie gehabt
-     * an 1 MB laden, also muessen wir dort die erste Sektion hinlegen
+     * Startpunkt des Kernels
      */
     . = 0x100000;
 
+    /* Kernel Start Punkt */
+    kernelStart = .;
+
     /*
-     * Der Multiboot-Header muss zuerst kommen (in den ersten 8 kB).
-     * Die Standardsektionen einfach hintereinander weg einbinden.
+     * Two text sections: .text and .multiboot
+     * Multiboot must be at the start of the kernel
      */
     .text : {
         *(multiboot)
@@ -30,4 +32,8 @@ SECTIONS
     .bss ALIGN(4096) : {
         *(.bss)
     }
+
+    /* Align the end of the kernel to the page size */
+    . = ALIGN(4096);
+    kernelEnd = .;
 }
