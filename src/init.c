@@ -3,6 +3,7 @@
 #include "console.h"
 #include "interrupts.h"
 #include "pmm.h"
+#include "vmm.h"
 
 void die(const char *msg)
 {
@@ -12,6 +13,15 @@ void die(const char *msg)
     while(1)
     {
         __asm__ volatile ("cli; hlt;");
+    }
+}
+
+void ksleep(uint32_t time)
+{
+    for(uint32_t i = 0; i < time; i++)
+    {
+        // BURN, CPU, BURN!
+        for(volatile size_t i = 0; i < 40000000; i++);
     }
 }
 
@@ -94,18 +104,25 @@ static void dumpMB(const MultibootStructure *mbHeader)
 void init(const MultibootStructure *mbHeader)
 {
     (void)debug_test;
+    (void)dumpMB;
 
 	ksetcolor(COLOR_BLACK, COLOR_LIGHTGRAY);
 	kclear();
 	kputs("Welcome to \x12\x05nucleo\x12\x07!\n");
 
-    dumpMB(mbHeader);
+    //dumpMB(mbHeader);
 
     kputs("Initialize physical memory management: ");
     pmm_init(mbHeader);
     kputs("success.\n");
-    uint32_t freeMem = pmm_calc_free();
-    kprintf("Free memory: %d B, %d kB, %d MB\n", freeMem, freeMem >> 10, freeMem >> 20);
+    // uint32_t freeMem = pmm_calc_free();
+    //kprintf("Free memory: %d B, %d kB, %d MB\n", freeMem, freeMem >> 10, freeMem >> 20);
+
+    ksleep(1);
+
+    kputs("Initialize virtual memory management: ");
+    vmm_init();
+    kputs("success.\n");
 
 	kputs("Initialize interrupts: ");
 	intr_init();

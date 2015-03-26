@@ -7,8 +7,8 @@ LD = ld
 # define nullptr, but not NULL.
 CFLAGS = -m32 -Dnullptr=0
 ASFLAGS =
-CCFLAGS = --std=c11 -Wall -g -fno-stack-protector -ffreestanding
-LDFLAGS = -melf_i386 -Tkernel.ld
+CCFLAGS = -g -std=c11 -Wall -g -fno-stack-protector -ffreestanding
+LDFLAGS = -g -melf_i386 -Tkernel.ld
 
 kernel: $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(addprefix obj/, $(notdir $^))
