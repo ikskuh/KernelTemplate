@@ -93,14 +93,12 @@ void pmm_init(const MultibootStructure *mb)
     }
 
     // Mark all kernel modules as "used"
+    if(mb->flags & MB_MODULES)
     {
-        if(mb->flags & MB_MODULES)
+        const MultibootModule *mod = (const MultibootModule *)mb->modules;
+        for(size_t i = 0; i < mb->moduleCount; i++)
         {
-            const MultibootModule *mod = (const MultibootModule *)mb->modules;
-            for(size_t i = 0; i < mb->moduleCount; i++)
-            {
-                markSection(mod[i].start, mod[i].end, 1);
-            }
+            markSection(mod[i].start, mod[i].end, 1);
         }
     }
 }
