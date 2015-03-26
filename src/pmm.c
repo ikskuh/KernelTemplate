@@ -32,11 +32,43 @@ static inline void *rebuild(uint32_t idx, uint32_t bit)
     return (void*)ptr;
 }
 
+/**
+ * Marks an address used or free
+ * @param addr The address that will be marked
+ * @param used If != 0, the addr will be marked as used, else it will be marked as free.
+ */
+static inline void mark(uintptr_t addr, uint32_t used)
+{
+    uint32_t bit, idx;
+    resolve((void*)addr, &idx, &bit);
+    if(used)
+        bitmap[idx] &= ~(1<<bit);
+    else
+        bitmap[idx] |= (1<<bit);
+}
+
+/**
+ * Marks a section in memory as used or free.
+ * @param start The start address of the section.
+ * @param end The end address of the section.
+ * @param used If 0 the section will be freed, else it will be marked as used.
+ */
+static inline void markSection(uintptr_t start, uintptr_t end, uint32_t used)
+{
+    uintptr_t it = start;
+    while(it < end)
+    {
+        mark(it, used);
+        it += 0x1000;
+    }
+}
+
 void pmm_init(const MultibootStructure *mb)
 {
     if((mb->flags & MB_MEMORYMAP) == 0)
         die("Multiboot header missing memory map. Cannot initialize PMM.");
 
+    // Make all memory used
     memset(bitmap, 0, sizeof(bitmap));
 
     // Free the memory map
@@ -47,13 +79,7 @@ void pmm_init(const MultibootStructure *mb)
             const MultibootMemoryMap *mmap = (const MultibootMemoryMap *)it;
             if(mmap->type == 1)
             {
-                uintptr_t addr = (uintptr_t)mmap->base;
-                uintptr_t end_addr = (uintptr_t)addr + (uintptr_t)mmap->length;
-                while (addr < end_addr)
-                {
-                    pmm_free((void*)addr);
-                    addr += 0x1000;
-                }
+                markSection(mmap->base, mmap->base + mmap->length, 0);
             }
             it += mmap->entry_size + 4; // Stupid offset :P
         }
@@ -61,14 +87,20 @@ void pmm_init(const MultibootStructure *mb)
 
     // Mark the whole kernel as "used"
     {
-        uintptr_t it = (uintptr_t)&kernelStart;
+        uintptr_t start = (uintptr_t)&kernelStart;
         uintptr_t end = (uintptr_t)&kernelEnd;
-        while(it < end)
+        markSection(start, end, 1);
+    }
+
+    // Mark all kernel modules as "used"
+    {
+        if(mb->flags & MB_MODULES)
         {
-            uint32_t bit, idx;
-            resolve((void*)it, &idx, &bit);
-            bitmap[idx] &= ~(1<<bit);
-            it += 0x1000;
+            const MultibootModule *mod = (const MultibootModule *)mb->modules;
+            for(size_t i = 0; i < mb->moduleCount; i++)
+            {
+                markSection(mod[i].start, mod[i].end, 1);
+            }
         }
     }
 }
@@ -89,9 +121,7 @@ uint32_t pmm_calc_free(void)
 
 void pmm_free(void *pptr)
 {
-    uint32_t bit, idx;
-    resolve(pptr, &idx, &bit);
-    bitmap[idx] |= (1<<bit);
+    mark((uintptr_t)pptr, 0);
 }
 
 
