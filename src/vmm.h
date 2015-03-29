@@ -6,6 +6,9 @@
 #define VM_WRITABLE 0x02
 #define VM_USER     0x04
 
+#define VM_KERNEL   (VM_PRESENT | VM_WRITABLE
+#define VM_PROGRAM  (VM_PRESENT | VM_WRITABLE | VM_USER)
+
 void vmm_init(void);
 
 /**

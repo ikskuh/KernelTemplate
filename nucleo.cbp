@@ -23,6 +23,7 @@
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 			</Target>
 		</Build>
@@ -62,6 +63,10 @@
 		</Unit>
 		<Unit filename="src/stdlib.h" />
 		<Unit filename="src/varargs.h" />
+		<Unit filename="src/vmm.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/vmm.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

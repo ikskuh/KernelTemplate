@@ -46,7 +46,6 @@ void vmm_map(uintptr_t virtual, uintptr_t physical, uint32_t flags)
     if((context->directory[dirIdx] & VM_PRESENT) == 0)
     {
         // Allocate page table if not exists.
-        kprintf("Page Table %d does not exist, create...\n", dirIdx);
         table = pmm_alloc();
         for(uint32_t i = 0; i < 1024; i++)
         {
