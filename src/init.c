@@ -134,36 +134,12 @@ void init(const MultibootStructure *mbHeader)
 
 	//__asm__ volatile("sti");
 
-    kputs("Prepare program page:  ");
+    kputs("Prepare heap memory:   ");
     for(uintptr_t ptr = 0x400000; ptr < 0x800000; ptr += 4096)
     {
         vmm_map(ptr, (uintptr_t)pmm_alloc(), VM_PROGRAM);
     }
     kputs("success.\n");
-
-    if(mbHeader->moduleCount >= 0)
-    {
-        const MultibootModule *mod = (const MultibootModule *)mbHeader->modules;
-        kputs("Load program: ");
-        kputs((const char *)mod->name);
-        kputs(" ");
-
-        size_t length = mod->end - mod->start;
-        void* load_addr = (void*) 0x400000; // Programs load at 4 MB
-
-        memcpy(load_addr, (void*)mod->start, length);
-
-        kputs("success.\n");
-
-        kputs("Run program: \n");
-        void (*fn)();
-        fn = (void(*)())0x400000;
-        fn();
-    }
-    else
-    {
-        kputs("Go into idle:\n");
-    }
 
 	while(1)
 	{

@@ -24,6 +24,7 @@ long_line_column=72
 
 [files]
 current_page=0
+FILE_NAME_0=1715;C;0;EUTF-8;1;1;0;%2Fhome%2Ffelix%2FDownloads%2Favr-libc-1.8.0%2Flibc%2Fstdlib%2Fstdlib_private.h;0;4
 
 [VTE]
 last_dir=/home/felix/projects/nucleo
